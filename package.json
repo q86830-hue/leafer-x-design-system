@@ -1,5 +1,5 @@
 {
-  "name": "leafer-design-system",
+  "name": "leafer-x-design-system",
   "version": "2.0.0",
   "description": "基于 LeaferJS 的高保真 UI 设计系统生成器",
   "main": "index.js",
