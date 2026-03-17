@@ -195,7 +195,44 @@ curl -X POST http://localhost:3001/api/v1/ui/render \
   }'
 ```
 
-### API 端点
+### MCP 服务配置（Trae 集成）
+
+在 Trae 中使用 MCP 服务，请在 `.trae/mcp.json` 中添加以下配置：
+
+```json
+{
+  "mcpServers": {
+    "leafer-design-system": {
+      "command": "node",
+      "args": [
+        "path/to/node_modules/leafer-x-design-system/mcp-server.js"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "description": "Leafer Design System - 高保真UI设计系统生成和渲染服务"
+    }
+  }
+}
+```
+
+或者使用全局安装的 CLI：
+
+```json
+{
+  "mcpServers": {
+    "leafer-design-system": {
+      "command": "leafer-design",
+      "args": ["mcp"],
+      "description": "Leafer Design System MCP 服务"
+    }
+  }
+}
+```
+
+### HTTP API 端点（独立服务）
+
+如果使用独立 HTTP 服务（`npm start` 或 `leafer-design serve`）：
 
 | 端点                        | 方法   | 描述    |
 | ------------------------- | ---- | ----- |
@@ -288,7 +325,7 @@ MIT License © 2024
 ### 联系方式
 
 - **微信**: 尽为一土
-- **邮箱**: spring60\@vip.qq.com
+- **邮箱**: <spring60@vip.qq.com>
 - **GitHub Issues**: [提交问题](https://github.com/yourusername/leafer-design-system/issues)
 
 ### 加入社区
