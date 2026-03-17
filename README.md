@@ -315,7 +315,7 @@ MIT License © 2024
       <sub>微信支付</sub>
     </td>
     <td align="center">
-      <img src="./assets/wechat-qr.png" width="200" alt="联系作者"/>
+      <img src="./assets/assetswechat-qr.png" width="200" alt="联系作者"/>
       <br />
       <sub>联系作者</sub>
     </td>
