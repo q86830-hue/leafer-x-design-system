@@ -25,6 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "@leafer-ui/node": "^1.0.0",
+    "@modelcontextprotocol/sdk": "^1.27.1",
     "skia-canvas": "^1.0.0",
     "uuid": "^9.0.0"
   },

@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "leafer-design-system": {
+      "command": "node",
+      "args": [
+        "g:\\dnzs\\mcp-server.js"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "description": "Leafer Design System - 高保真UI设计系统生成和渲染服务",
+      "enabled": true
+    }
+  }
+}
