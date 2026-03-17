@@ -110,6 +110,7 @@ const result = await renderer.render({
 ## 📋 组件列表
 
 ### 基础组件
+
 - ✅ Button (7种变体: Primary, Secondary, Success, Warning, Error, Ghost, Outline)
 - ✅ Input (多种状态: Default, Focused, Error, Disabled)
 - ✅ Card
@@ -118,6 +119,7 @@ const result = await renderer.render({
 - ✅ Progress
 
 ### 高级组件
+
 - ✅ Table (表格)
 - ✅ Modal (模态框)
 - ✅ Dropdown (下拉菜单)
@@ -127,6 +129,7 @@ const result = await renderer.render({
 - ✅ Radio (单选按钮)
 
 ### 响应式模板
+
 - ✅ Mobile Login (移动端登录)
 - ✅ Mobile Home (移动端首页)
 - ✅ Tablet Dashboard (平板仪表盘)
@@ -194,14 +197,14 @@ curl -X POST http://localhost:3001/api/v1/ui/render \
 
 ### API 端点
 
-| 端点 | 方法 | 描述 |
-|------|------|------|
-| `/health` | GET | 健康检查 |
-| `/api/v1/ui/render` | POST | 渲染 UI |
-| `/api/v1/ui/batch-render` | POST | 批量渲染 |
-| `/api/v1/cache/clear` | POST | 清空缓存 |
-| `/api/v1/stats` | GET | 获取统计 |
-| `/output/:filename` | GET | 获取图片 |
+| 端点                        | 方法   | 描述    |
+| ------------------------- | ---- | ----- |
+| `/health`                 | GET  | 健康检查  |
+| `/api/v1/ui/render`       | POST | 渲染 UI |
+| `/api/v1/ui/batch-render` | POST | 批量渲染  |
+| `/api/v1/cache/clear`     | POST | 清空缓存  |
+| `/api/v1/stats`           | GET  | 获取统计  |
+| `/output/:filename`       | GET  | 获取图片  |
 
 ## 📁 项目结构
 
@@ -261,7 +264,7 @@ MIT License © 2024
 - [LeaferJS GitHub](https://github.com/leaferjs/leafer)
 - [Skia Canvas](https://github.com/samizdatco/skia-canvas)
 
----
+***
 
 ## 🤝 支持与联系
 
@@ -285,13 +288,13 @@ MIT License © 2024
 ### 联系方式
 
 - **微信**: 尽为一土
-- **邮箱**: your.email@example.com
+- **邮箱**: spring60\@vip.qq.com
 - **GitHub Issues**: [提交问题](https://github.com/yourusername/leafer-design-system/issues)
 
 ### 加入社区
 
 欢迎加入我们的社区，一起交流 LeaferJS 和设计系统的相关技术！
 
----
+***
 
 **如果这个项目对你有帮助，请给我们一个 ⭐ Star！**
