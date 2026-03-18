@@ -126,8 +126,9 @@ function serveCommand() {
   console.log(`\n🚀 启动 MCP 服务...`);
   console.log(`   端口: ${port}\n`);
   
-  // 启动服务
-  require('./start-mcp-service-v2');
+  // 设置端口环境变量并启动HTTP+MCP服务
+  process.env.MCP_PORT = port;
+  require('./mcp-http-server');
 }
 
 // 主程序

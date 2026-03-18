@@ -54,6 +54,7 @@
     "WORKFLOW_DIAGRAM.md",
     "MCP_WORKFLOW.md",
     "assets/",
-    "examples/"
+    "examples/",
+    "templates/"
   ]
 }
