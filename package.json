@@ -48,6 +48,7 @@
     "font-config.js",
     "leafer-*.js",
     "mcp-*.js",
+    "mcp-http-server.js",
     "render-*.js",
     "README.md",
     "LICENSE",
