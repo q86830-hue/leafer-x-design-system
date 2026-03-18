@@ -3,7 +3,7 @@
     "leafer-design-system": {
       "command": "node",
       "args": [
-        "g:\\dnzs\\mcp-server.js"
+        "${workspaceFolder}/mcp-server.js"
       ],
       "env": {
         "NODE_ENV": "production"
