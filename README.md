@@ -282,6 +282,16 @@ const result = await renderer.render({
 
 > 💡 **说明**: 本系统主要使用 LLM 生成结构化 UI 描述，再通过 LeaferJS 渲染成高保真矢量图像。这种方式比直接生成位图更灵活、可编辑、可缩放。
 
+### 图像生成模型（如需直接生成图片）
+如需直接生成位图图片（而非本系统的矢量渲染），可使用：
+- **OpenAI DALL-E 3**: 高质量图像生成
+- **阿里通义万相**: 中文理解好
+- **字节豆包·生图**: 速度快
+- **百度文心一格**: 艺术风格
+- **Stability AI**: 开源生态
+
+> 💡 **说明**: 本系统主要使用 LLM 生成结构化 UI 描述，再通过 LeaferJS 渲染成高保真矢量图像。这种方式比直接生成位图更灵活、可编辑、可缩放。
+
 ### 使用 AI 生成 UI
 
 ```javascript
@@ -327,18 +337,43 @@ const uiDescription = await generator.generateUIDescription(
 创建 `.env` 文件配置 API 密钥：
 
 ```bash
-# 国内模型
-DEEPSEEK_API_KEY=your_deepseek_api_key
+# ==================== 国内大语言模型 ====================
+BAIDU_API_KEY=your_baidu_api_key
+BAIDU_SECRET_KEY=your_baidu_secret_key
 QWEN_API_KEY=your_qwen_api_key
 CHATGLM_API_KEY=your_chatglm_api_key
+SPARK_APP_ID=your_spark_app_id
+SPARK_API_KEY=your_spark_api_key
+SPARK_API_SECRET=your_spark_api_secret
+DEEPSEEK_API_KEY=your_deepseek_api_key
 KIMI_API_KEY=your_kimi_api_key
+MINIMAX_API_KEY=your_minimax_api_key
+DOUBAO_API_KEY=your_doubao_api_key
+YI_API_KEY=your_yi_api_key
+BAICHUAN_API_KEY=your_baichuan_api_key
 
-# 国外模型
+# ==================== 国外大语言模型 ====================
 OPENAI_API_KEY=your_openai_api_key
 ANTHROPIC_API_KEY=your_anthropic_api_key
+GOOGLE_API_KEY=your_google_api_key
 OPENROUTER_API_KEY=your_openrouter_api_key
+COHERE_API_KEY=your_cohere_api_key
+MISTRAL_API_KEY=your_mistral_api_key
 
-# 默认配置
+# ==================== 图像生成模型 ====================
+# OpenAI DALL-E
+DALLE_API_KEY=your_dalle_api_key
+
+# 阿里通义万相
+WANXIANG_API_KEY=your_wanxiang_api_key
+
+# 字节豆包生图
+DOUBAO_IMAGE_API_KEY=your_doubao_image_api_key
+
+# Stability AI
+STABILITY_API_KEY=your_stability_api_key
+
+# ==================== 默认配置 ====================
 DEFAULT_AI_PROVIDER=openrouter
 DEFAULT_MODEL=openrouter/healer-alpha
 ```
@@ -377,7 +412,7 @@ curl -X POST http://localhost:3001/api/v1/ui/render \
     "leafer-design-system": {
       "command": "node",
       "args": [
-        "path/to/node_modules/leafer-x-design-system/mcp-server.js"
+        "path/to/node_modules/leafer-x-design-system/mcp-server-v3.js"
       ],
       "env": {
         "NODE_ENV": "production"
