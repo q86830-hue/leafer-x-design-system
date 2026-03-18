@@ -1,16 +1,16 @@
 {
   "name": "leafer-x-design-system",
-  "version": "2.0.3",
-  "description": "基于 LeaferJS 的高保真 UI 设计系统生成器",
+  "version": "2.1.0",
+  "description": "基于 LeaferJS 的高保真 UI 设计系统生成器 - 支持全平台(MCP v3.1)",
   "main": "index.js",
   "types": "index.d.ts",
   "bin": {
     "leafer-design": "cli.js"
   },
   "scripts": {
-    "start": "node start-mcp-service-v2.js",
+    "start": "node mcp-server-v3.js",
     "generate": "node leafer-design-system-pro.js",
-    "render": "node render-pro-templates.js"
+    "render": "node render-design-system-v3.js"
   },
   "keywords": [
     "leaferjs",
@@ -47,13 +47,13 @@
     "browser-bridge.js",
     "font-config.js",
     "leafer-*.js",
-    "start-*.js",
     "mcp-*.js",
-    "strat-studio-*.js",
+    "render-*.js",
     "README.md",
     "LICENSE",
+    "WORKFLOW_DIAGRAM.md",
+    "MCP_WORKFLOW.md",
     "assets/",
-    "examples/",
-    "ui-design/"
+    "examples/"
   ]
 }
