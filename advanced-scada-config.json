@@ -1,0 +1,482 @@
+{
+  "width": 1400,
+  "height": 900,
+  "backgroundColor": "#0f172a",
+  "elements": [
+    {
+      "type": "box",
+      "x": 0,
+      "y": 0,
+      "width": 1400,
+      "height": 900,
+      "fill": "#0f172a"
+    },
+    {
+      "type": "box",
+      "x": 0,
+      "y": 0,
+      "width": 1400,
+      "height": 70,
+      "fill": "#1e293b"
+    },
+    {
+      "type": "text",
+      "x": 700,
+      "y": 35,
+      "text": "智能工厂监控系统 v2.0",
+      "fill": "#f8fafc",
+      "fontSize": 28,
+      "fontWeight": "bold",
+      "textAlign": "center"
+    },
+    {
+      "type": "box",
+      "x": 0,
+      "y": 70,
+      "width": 220,
+      "height": 830,
+      "fill": "#1e293b"
+    },
+    {
+      "type": "text",
+      "x": 110,
+      "y": 120,
+      "text": "系统导航",
+      "fill": "#94a3b8",
+      "fontSize": 18,
+      "fontWeight": "bold",
+      "textAlign": "center"
+    },
+    {
+      "type": "box",
+      "x": 240,
+      "y": 90,
+      "width": 920,
+      "height": 780,
+      "fill": "#0f172a",
+      "stroke": "#334155",
+      "strokeWidth": 1
+    },
+    {
+      "type": "box",
+      "x": 270,
+      "y": 120,
+      "width": 280,
+      "height": 200,
+      "fill": "#1e293b",
+      "stroke": "#10b981",
+      "strokeWidth": 2,
+      "cornerRadius": 10
+    },
+    {
+      "type": "text",
+      "x": 410,
+      "y": 150,
+      "text": "生产线 A",
+      "fill": "#f8fafc",
+      "fontSize": 20,
+      "fontWeight": "bold",
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 410,
+      "y": 180,
+      "text": "状态: 运行中",
+      "fill": "#10b981",
+      "fontSize": 14,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 410,
+      "y": 210,
+      "text": "产量: 1250 件/小时",
+      "fill": "#94a3b8",
+      "fontSize": 12,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 410,
+      "y": 230,
+      "text": "效率: 92%",
+      "fill": "#10b981",
+      "fontSize": 12,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 410,
+      "y": 250,
+      "text": "温度: 24°C",
+      "fill": "#94a3b8",
+      "fontSize": 12,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 410,
+      "y": 270,
+      "text": "湿度: 45%",
+      "fill": "#94a3b8",
+      "fontSize": 12,
+      "textAlign": "center"
+    },
+    {
+      "type": "box",
+      "x": 580,
+      "y": 120,
+      "width": 280,
+      "height": 200,
+      "fill": "#1e293b",
+      "stroke": "#f59e0b",
+      "strokeWidth": 2,
+      "cornerRadius": 10
+    },
+    {
+      "type": "text",
+      "x": 720,
+      "y": 150,
+      "text": "生产线 B",
+      "fill": "#f8fafc",
+      "fontSize": 20,
+      "fontWeight": "bold",
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 720,
+      "y": 180,
+      "text": "状态: 维护中",
+      "fill": "#f59e0b",
+      "fontSize": 14,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 720,
+      "y": 210,
+      "text": "产量: 0 件/小时",
+      "fill": "#94a3b8",
+      "fontSize": 12,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 720,
+      "y": 230,
+      "text": "效率: 0%",
+      "fill": "#94a3b8",
+      "fontSize": 12,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 720,
+      "y": 250,
+      "text": "维护进度: 65%",
+      "fill": "#f59e0b",
+      "fontSize": 12,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 720,
+      "y": 270,
+      "text": "预计完成: 14:30",
+      "fill": "#94a3b8",
+      "fontSize": 12,
+      "textAlign": "center"
+    },
+    {
+      "type": "box",
+      "x": 270,
+      "y": 350,
+      "width": 590,
+      "height": 200,
+      "fill": "#1e293b",
+      "stroke": "#3b82f6",
+      "strokeWidth": 2,
+      "cornerRadius": 10
+    },
+    {
+      "type": "text",
+      "x": 565,
+      "y": 380,
+      "text": "智能仓库",
+      "fill": "#f8fafc",
+      "fontSize": 20,
+      "fontWeight": "bold",
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 565,
+      "y": 410,
+      "text": "库存: 15,000 件",
+      "fill": "#3b82f6",
+      "fontSize": 14,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 565,
+      "y": 440,
+      "text": "入库: 120 件/小时",
+      "fill": "#10b981",
+      "fontSize": 12,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 565,
+      "y": 460,
+      "text": "出库: 95 件/小时",
+      "fill": "#f59e0b",
+      "fontSize": 12,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 565,
+      "y": 480,
+      "text": "容量: 75%",
+      "fill": "#3b82f6",
+      "fontSize": 12,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 565,
+      "y": 500,
+      "text": "AGV车辆: 8/10 台运行中",
+      "fill": "#10b981",
+      "fontSize": 12,
+      "textAlign": "center"
+    },
+    {
+      "type": "box",
+      "x": 890,
+      "y": 350,
+      "width": 250,
+      "height": 200,
+      "fill": "#1e293b",
+      "stroke": "#8b5cf6",
+      "strokeWidth": 2,
+      "cornerRadius": 10
+    },
+    {
+      "type": "text",
+      "x": 1015,
+      "y": 380,
+      "text": "能源监控",
+      "fill": "#f8fafc",
+      "fontSize": 20,
+      "fontWeight": "bold",
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 1015,
+      "y": 410,
+      "text": "总功率: 2.4 MW",
+      "fill": "#8b5cf6",
+      "fontSize": 14,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 1015,
+      "y": 440,
+      "text": "太阳能: 0.8 MW",
+      "fill": "#10b981",
+      "fontSize": 12,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 1015,
+      "y": 460,
+      "text": "电网: 1.6 MW",
+      "fill": "#3b82f6",
+      "fontSize": 12,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 1015,
+      "y": 480,
+      "text": "储能: 85%",
+      "fill": "#10b981",
+      "fontSize": 12,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 1015,
+      "y": 500,
+      "text": "碳排放: 低",
+      "fill": "#10b981",
+      "fontSize": 12,
+      "textAlign": "center"
+    },
+    {
+      "type": "line",
+      "x1": 550,
+      "y1": 220,
+      "x2": 580,
+      "y2": 220,
+      "stroke": "#10b981",
+      "strokeWidth": 3
+    },
+    {
+      "type": "line",
+      "x1": 410,
+      "y1": 320,
+      "x2": 410,
+      "y2": 350,
+      "stroke": "#3b82f6",
+      "strokeWidth": 3
+    },
+    {
+      "type": "line",
+      "x1": 720,
+      "y1": 320,
+      "x2": 720,
+      "y2": 350,
+      "stroke": "#3b82f6",
+      "strokeWidth": 3
+    },
+    {
+      "type": "box",
+      "x": 1180,
+      "y": 90,
+      "width": 200,
+      "height": 780,
+      "fill": "#1e293b"
+    },
+    {
+      "type": "text",
+      "x": 1280,
+      "y": 130,
+      "text": "实时数据",
+      "fill": "#f8fafc",
+      "fontSize": 18,
+      "fontWeight": "bold",
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 1280,
+      "y": 170,
+      "text": "总产量",
+      "fill": "#94a3b8",
+      "fontSize": 14,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 1280,
+      "y": 190,
+      "text": "1250 件/小时",
+      "fill": "#10b981",
+      "fontSize": 16,
+      "fontWeight": "bold",
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 1280,
+      "y": 230,
+      "text": "设备健康度",
+      "fill": "#94a3b8",
+      "fontSize": 14,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 1280,
+      "y": 250,
+      "text": "98.5%",
+      "fill": "#10b981",
+      "fontSize": 16,
+      "fontWeight": "bold",
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 1280,
+      "y": 290,
+      "text": "质量合格率",
+      "fill": "#94a3b8",
+      "fontSize": 14,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 1280,
+      "y": 310,
+      "text": "99.2%",
+      "fill": "#10b981",
+      "fontSize": 16,
+      "fontWeight": "bold",
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 1280,
+      "y": 350,
+      "text": "能耗效率",
+      "fill": "#94a3b8",
+      "fontSize": 14,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 1280,
+      "y": 370,
+      "text": "94.8%",
+      "fill": "#3b82f6",
+      "fontSize": 16,
+      "fontWeight": "bold",
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 1280,
+      "y": 410,
+      "text": "系统状态",
+      "fill": "#94a3b8",
+      "fontSize": 14,
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 1280,
+      "y": 430,
+      "text": "正常运行",
+      "fill": "#10b981",
+      "fontSize": 16,
+      "fontWeight": "bold",
+      "textAlign": "center"
+    },
+    {
+      "type": "box",
+      "x": 0,
+      "y": 870,
+      "width": 1400,
+      "height": 30,
+      "fill": "#1e293b"
+    },
+    {
+      "type": "text",
+      "x": 700,
+      "y": 885,
+      "text": "系统时间: 2024-01-15 14:30:25 | 运行时间: 45天 12小时 | 报警: 0 | 通信: 正常 | 网络: 100 Mbps",
+      "fill": "#94a3b8",
+      "fontSize": 12,
+      "textAlign": "center"
+    }
+  ]
+}

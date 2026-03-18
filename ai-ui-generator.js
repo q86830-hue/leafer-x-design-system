@@ -1,25 +1,62 @@
 /**
- * AI UI 生成器 - 阶段3实现
- * 集成图形模型 API、无头浏览器和 Leafer Design System
+ * AI UI 生成器 - 多模型支持版本
+ * 集成国内外主流 AI 模型 API
  * 
- * 使用 Shannon 六把钥匙方法论:
- * 1. 简化: 核心功能是 AI 生成 UI 描述
- * 2. 重述: 作为智能设计助手
- * 3. 泛化: 通用的 AI 驱动设计流程
- * 4. 分解: AI调用→描述生成→渲染→输出
- * 5. 繁衍: 从高质量UI需求倒推AI提示词
- * 6. 类比: 类似 Figma AI 或 Canva Magic Design
+ * 支持的模型:
+ * 国内: 文心一言、通义千问、智谱AI、讯飞星火、DeepSeek、Kimi、MiniMax
+ * 国外: OpenAI、Claude、Gemini、OpenRouter、Cohere、Mistral
  */
 
 const { BrowserBridge } = require('./browser-bridge');
 const { LeaferRendererV2 } = require('./leafer-renderer-v2');
+const { 
+  getModelConfig, 
+  getConfigByModelId, 
+  getRecommendedModels,
+  validateApiKey 
+} = require('./ai-model-config');
 
 class AIUIGenerator {
   constructor(options = {}) {
     this.browser = new BrowserBridge(options.browser);
     this.leafer = new LeaferRendererV2(options.leafer);
-    this.aiProvider = options.aiProvider || 'claude'; // 或 'openai'
-    this.apiKey = options.apiKey;
+    
+    // 模型配置
+    this.aiProvider = options.aiProvider || process.env.DEFAULT_AI_PROVIDER || 'openrouter';
+    this.model = options.model || process.env.DEFAULT_MODEL || 'openrouter/healer-alpha';
+    this.apiKey = options.apiKey || this.getApiKeyFromEnv(this.aiProvider);
+    
+    // 获取模型配置
+    this.modelConfig = getConfigByModelId(this.model) || getModelConfig(this.aiProvider);
+    if (this.modelConfig) {
+      this.baseURL = options.baseURL || this.modelConfig.baseURL;
+    }
+    
+    console.log(`[AIUIGenerator] 使用模型: ${this.model} (${this.aiProvider})`);
+  }
+
+  /**
+   * 从环境变量获取 API 密钥
+   */
+  getApiKeyFromEnv(provider) {
+    const envMap = {
+      'openrouter': 'OPENROUTER_API_KEY',
+      'openai': 'OPENAI_API_KEY',
+      'anthropic': 'ANTHROPIC_API_KEY',
+      'google': 'GOOGLE_API_KEY',
+      'qwen': 'QWEN_API_KEY',
+      'deepseek': 'DEEPSEEK_API_KEY',
+      'kimi': 'KIMI_API_KEY',
+      'chatglm': 'CHATGLM_API_KEY',
+      'ernie': 'BAIDU_API_KEY',
+      'spark': 'SPARK_API_KEY',
+      'minimax': 'MINIMAX_API_KEY',
+      'cohere': 'COHERE_API_KEY',
+      'mistral': 'MISTRAL_API_KEY'
+    };
+    
+    const envKey = envMap[provider];
+    return envKey ? process.env[envKey] : null;
   }
 
   /**
@@ -28,7 +65,6 @@ class AIUIGenerator {
   async init() {
     console.log('[AIUIGenerator] 初始化...');
     await this.browser.launch();
-    await this.leafer.init();
     console.log('[AIUIGenerator] ✅ 初始化完成');
   }
 
@@ -41,6 +77,7 @@ class AIUIGenerator {
    */
   async generateUIDescription(prompt, options = {}) {
     console.log('[AIUIGenerator] 生成 UI 描述...');
+    console.log(`[AIUIGenerator] 使用提供商: ${this.aiProvider}, 模型: ${this.model}`);
     
     const systemPrompt = `你是一个专业的 UI/UX 设计师。根据用户的需求，生成结构化的 UI 设计描述。
     
@@ -82,130 +119,558 @@ class AIUIGenerator {
 
 请生成详细的 UI 设计描述。`;
 
-    // 这里调用实际的 AI API
-    // 暂时使用模拟数据演示
-    const uiDescription = await this.mockAIGeneration(userPrompt, systemPrompt);
+    // 根据提供商调用对应的 API
+    let uiDescription;
+    try {
+      uiDescription = await this.callAIAPI(userPrompt, systemPrompt);
+    } catch (error) {
+      console.warn(`[AIUIGenerator] ${this.aiProvider} API 调用失败，使用备用方案:`, error.message);
+      uiDescription = await this.mockAIGeneration(userPrompt, systemPrompt);
+    }
     
     console.log('[AIUIGenerator] ✅ UI 描述生成完成');
     return uiDescription;
   }
 
   /**
-   * 模拟 AI 生成（实际项目中替换为真实 API 调用）
+   * 统一调用 AI API
+   */
+  async callAIAPI(userPrompt, systemPrompt) {
+    switch (this.aiProvider) {
+      case 'openrouter':
+        return await this.callOpenRouterAPI(userPrompt, systemPrompt);
+      case 'openai':
+        return await this.callOpenAIAPI(userPrompt, systemPrompt);
+      case 'anthropic':
+        return await this.callClaudeAPI(userPrompt, systemPrompt);
+      case 'qwen':
+        return await this.callQwenAPI(userPrompt, systemPrompt);
+      case 'deepseek':
+        return await this.callDeepSeekAPI(userPrompt, systemPrompt);
+      case 'kimi':
+        return await this.callKimiAPI(userPrompt, systemPrompt);
+      case 'chatglm':
+        return await this.callChatGLMAPI(userPrompt, systemPrompt);
+      case 'gemini':
+        return await this.callGeminiAPI(userPrompt, systemPrompt);
+      default:
+        // 默认使用 OpenRouter 格式
+        return await this.callOpenRouterAPI(userPrompt, systemPrompt);
+    }
+  }
+
+  /**
+   * 调用 OpenRouter API
+   */
+  async callOpenRouterAPI(userPrompt, systemPrompt) {
+    console.log('[AIUIGenerator] 调用 OpenRouter API...');
+    return this.callGenericOpenAICompatibleAPI(
+      'openrouter.ai',
+      '/api/v1/chat/completions',
+      userPrompt,
+      systemPrompt,
+      {
+        'HTTP-Referer': 'https://github.com/q86830-hue/leafer-x-design-system',
+        'X-Title': 'Leafer Design System'
+      }
+    );
+  }
+
+  /**
+   * 调用 OpenAI API
+   */
+  async callOpenAIAPI(userPrompt, systemPrompt) {
+    console.log('[AIUIGenerator] 调用 OpenAI API...');
+    return this.callGenericOpenAICompatibleAPI(
+      'api.openai.com',
+      '/v1/chat/completions',
+      userPrompt,
+      systemPrompt
+    );
+  }
+
+  /**
+   * 调用 DeepSeek API
+   */
+  async callDeepSeekAPI(userPrompt, systemPrompt) {
+    console.log('[AIUIGenerator] 调用 DeepSeek API...');
+    return this.callGenericOpenAICompatibleAPI(
+      'api.deepseek.com',
+      '/v1/chat/completions',
+      userPrompt,
+      systemPrompt
+    );
+  }
+
+  /**
+   * 调用 Kimi API
+   */
+  async callKimiAPI(userPrompt, systemPrompt) {
+    console.log('[AIUIGenerator] 调用 Kimi API...');
+    return this.callGenericOpenAICompatibleAPI(
+      'api.moonshot.cn',
+      '/v1/chat/completions',
+      userPrompt,
+      systemPrompt
+    );
+  }
+
+  /**
+   * 调用 ChatGLM API
+   */
+  async callChatGLMAPI(userPrompt, systemPrompt) {
+    console.log('[AIUIGenerator] 调用 ChatGLM API...');
+    return this.callGenericOpenAICompatibleAPI(
+      'open.bigmodel.cn',
+      '/api/paas/v4/chat/completions',
+      userPrompt,
+      systemPrompt
+    );
+  }
+
+  /**
+   * 通用 OpenAI 兼容格式 API 调用
+   */
+  async callGenericOpenAICompatibleAPI(hostname, path, userPrompt, systemPrompt, extraHeaders = {}) {
+    const https = require('https');
+    
+    const postData = JSON.stringify({
+      model: this.model,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt }
+      ],
+      temperature: 0.7,
+      max_tokens: 2000
+    });
+    
+    const options = {
+      hostname: hostname,
+      path: path,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`,
+        ...extraHeaders
+      }
+    };
+    
+    return new Promise((resolve, reject) => {
+      const req = https.request(options, (res) => {
+        let data = '';
+        res.on('data', (chunk) => data += chunk);
+        res.on('end', () => {
+          try {
+            const response = JSON.parse(data);
+            if (response.error) {
+              reject(new Error(response.error.message || JSON.stringify(response.error)));
+              return;
+            }
+            
+            const content = response.choices[0].message.content;
+            console.log('[AIUIGenerator] ✅ API 调用成功');
+            
+            // 解析 JSON 响应
+            try {
+              const uiDescription = JSON.parse(content);
+              resolve(uiDescription);
+            } catch (e) {
+              // 如果返回的不是纯 JSON，尝试提取 JSON 部分
+              const jsonMatch = content.match(/\{[\s\S]*\}/);
+              if (jsonMatch) {
+                resolve(JSON.parse(jsonMatch[0]));
+              } else {
+                reject(new Error('无法解析 API 响应'));
+              }
+            }
+          } catch (e) {
+            reject(e);
+          }
+        });
+      });
+      
+      req.on('error', (err) => {
+        console.error('[AIUIGenerator] API 调用失败:', err.message);
+        reject(err);
+      });
+      
+      req.write(postData);
+      req.end();
+    });
+  }
+
+  /**
+   * 调用通义千问 API
+   */
+  async callQwenAPI(userPrompt, systemPrompt) {
+    console.log('[AIUIGenerator] 调用通义千问 API...');
+    const https = require('https');
+    
+    const postData = JSON.stringify({
+      model: this.model,
+      input: {
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ]
+      },
+      parameters: {
+        temperature: 0.7,
+        max_tokens: 2000,
+        result_format: 'message'
+      }
+    });
+    
+    const options = {
+      hostname: 'dashscope.aliyuncs.com',
+      path: '/api/v1/services/aigc/text-generation/generation',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`
+      }
+    };
+    
+    return new Promise((resolve, reject) => {
+      const req = https.request(options, (res) => {
+        let data = '';
+        res.on('data', (chunk) => data += chunk);
+        res.on('end', () => {
+          try {
+            const response = JSON.parse(data);
+            if (response.code) {
+              reject(new Error(response.message || 'API 调用失败'));
+              return;
+            }
+            
+            const content = response.output.choices[0].message.content;
+            console.log('[AIUIGenerator] ✅ 通义千问 API 调用成功');
+            
+            try {
+              const uiDescription = JSON.parse(content);
+              resolve(uiDescription);
+            } catch (e) {
+              const jsonMatch = content.match(/\{[\s\S]*\}/);
+              if (jsonMatch) {
+                resolve(JSON.parse(jsonMatch[0]));
+              } else {
+                reject(new Error('无法解析 API 响应'));
+              }
+            }
+          } catch (e) {
+            reject(e);
+          }
+        });
+      });
+      
+      req.on('error', reject);
+      req.write(postData);
+      req.end();
+    });
+  }
+
+  /**
+   * 调用 Claude API
+   */
+  async callClaudeAPI(userPrompt, systemPrompt) {
+    console.log('[AIUIGenerator] 调用 Claude API...');
+    const https = require('https');
+    
+    const postData = JSON.stringify({
+      model: this.model,
+      max_tokens: 2000,
+      temperature: 0.7,
+      system: systemPrompt,
+      messages: [
+        { role: 'user', content: userPrompt }
+      ]
+    });
+    
+    const options = {
+      hostname: 'api.anthropic.com',
+      path: '/v1/messages',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': this.apiKey,
+        'anthropic-version': '2023-06-01'
+      }
+    };
+    
+    return new Promise((resolve, reject) => {
+      const req = https.request(options, (res) => {
+        let data = '';
+        res.on('data', (chunk) => data += chunk);
+        res.on('end', () => {
+          try {
+            const response = JSON.parse(data);
+            if (response.error) {
+              reject(new Error(response.error.message));
+              return;
+            }
+            
+            const content = response.content[0].text;
+            console.log('[AIUIGenerator] ✅ Claude API 调用成功');
+            
+            try {
+              const uiDescription = JSON.parse(content);
+              resolve(uiDescription);
+            } catch (e) {
+              const jsonMatch = content.match(/\{[\s\S]*\}/);
+              if (jsonMatch) {
+                resolve(JSON.parse(jsonMatch[0]));
+              } else {
+                reject(new Error('无法解析 API 响应'));
+              }
+            }
+          } catch (e) {
+            reject(e);
+          }
+        });
+      });
+      
+      req.on('error', reject);
+      req.write(postData);
+      req.end();
+    });
+  }
+
+  /**
+   * 调用 Gemini API
+   */
+  async callGeminiAPI(userPrompt, systemPrompt) {
+    console.log('[AIUIGenerator] 调用 Gemini API...');
+    const https = require('https');
+    
+    const postData = JSON.stringify({
+      contents: [
+        {
+          role: 'user',
+          parts: [
+            { text: systemPrompt + '\n\n' + userPrompt }
+          ]
+        }
+      ],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 2000
+      }
+    });
+    
+    const options = {
+      hostname: 'generativelanguage.googleapis.com',
+      path: `/v1beta/models/${this.model}:generateContent?key=${this.apiKey}`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+    
+    return new Promise((resolve, reject) => {
+      const req = https.request(options, (res) => {
+        let data = '';
+        res.on('data', (chunk) => data += chunk);
+        res.on('end', () => {
+          try {
+            const response = JSON.parse(data);
+            if (response.error) {
+              reject(new Error(response.error.message));
+              return;
+            }
+            
+            const content = response.candidates[0].content.parts[0].text;
+            console.log('[AIUIGenerator] ✅ Gemini API 调用成功');
+            
+            try {
+              const uiDescription = JSON.parse(content);
+              resolve(uiDescription);
+            } catch (e) {
+              const jsonMatch = content.match(/\{[\s\S]*\}/);
+              if (jsonMatch) {
+                resolve(JSON.parse(jsonMatch[0]));
+              } else {
+                reject(new Error('无法解析 API 响应'));
+              }
+            }
+          } catch (e) {
+            reject(e);
+          }
+        });
+      });
+      
+      req.on('error', reject);
+      req.write(postData);
+      req.end();
+    });
+  }
+
+  /**
+   * 模拟 AI 生成（备用方案）
    */
   async mockAIGeneration(userPrompt, systemPrompt) {
-    // 模拟延迟
+    console.log('[AIUIGenerator] 使用模拟数据...');
+    
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     // 根据用户输入生成不同的 UI 描述
     if (userPrompt.includes('电商') || userPrompt.includes('商品')) {
-      return {
-        type: 'ecommerce-product-page',
-        layout: 'grid',
-        theme: {
-          primaryColor: '#ff6b6b',
-          secondaryColor: '#4ecdc4',
-          backgroundColor: '#f8f9fa',
-          fontFamily: 'Microsoft YaHei'
-        },
-        components: [
-          {
-            type: 'header',
-            props: {
-              logo: '商城Logo',
-              navItems: ['首页', '分类', '购物车', '我的'],
-              height: 60
-            }
-          },
-          {
-            type: 'product-gallery',
-            props: {
-              mainImage: '主图',
-              thumbnails: 4,
-              width: 500,
-              height: 500
-            }
-          },
-          {
-            type: 'product-info',
-            props: {
-              title: '高品质商品',
-              price: '¥299',
-              originalPrice: '¥399',
-              rating: 4.8,
-              reviews: 128,
-              description: '这是一个非常棒的商品...'
-            }
-          },
-          {
-            type: 'action-bar',
-            props: {
-              buttons: [
-                { text: '立即购买', type: 'primary', color: '#ff6b6b' },
-                { text: '加入购物车', type: 'secondary', color: '#4ecdc4' }
-              ]
-            }
-          }
-        ]
-      };
+      return this.generateEcommerceMock();
     }
     
     if (userPrompt.includes('仪表板') || userPrompt.includes('dashboard')) {
-      return {
-        type: 'dashboard',
-        layout: 'grid',
-        theme: {
-          primaryColor: '#667eea',
-          secondaryColor: '#764ba2',
-          backgroundColor: '#1a202c',
-          fontFamily: 'Microsoft YaHei'
-        },
-        components: [
-          {
-            type: 'sidebar',
-            props: {
-              menuItems: ['概览', '分析', '用户', '设置'],
-              width: 240
-            }
-          },
-          {
-            type: 'stats-cards',
-            props: {
-              cards: [
-                { title: '总用户', value: '12,345', change: '+12%' },
-                { title: '收入', value: '¥89,234', change: '+23%' },
-                { title: '订单', value: '1,234', change: '+5%' },
-                { title: '转化率', value: '3.2%', change: '-2%' }
-              ]
-            }
-          },
-          {
-            type: 'chart',
-            props: {
-              type: 'line',
-              title: '趋势图',
-              height: 300
-            }
-          },
-          {
-            type: 'data-table',
-            props: {
-              title: '最近订单',
-              columns: ['订单号', '客户', '金额', '状态'],
-              rows: 5
-            }
-          }
-        ]
-      };
+      return this.generateDashboardMock();
+    }
+    
+    if (userPrompt.includes('Strat Studio') || userPrompt.includes('设计工作室')) {
+      return this.generateStratStudioMock();
     }
     
     // 默认落地页
+    return this.generateLandingPageMock();
+  }
+
+  generateEcommerceMock() {
+    return {
+      type: 'ecommerce-product-page',
+      layout: 'grid',
+      theme: {
+        primaryColor: '#ff6b6b',
+        secondaryColor: '#4ecdc4',
+        backgroundColor: '#f8f9fa',
+        fontFamily: 'Microsoft YaHei'
+      },
+      components: [
+        {
+          type: 'header',
+          props: {
+            logo: '商城Logo',
+            navItems: ['首页', '分类', '购物车', '我的'],
+            height: 60
+          }
+        },
+        {
+          type: 'product-gallery',
+          props: {
+            mainImage: '主图',
+            thumbnails: 4,
+            width: 500,
+            height: 500
+          }
+        },
+        {
+          type: 'product-info',
+          props: {
+            title: '高品质商品',
+            price: '¥299',
+            originalPrice: '¥399',
+            rating: 4.8,
+            reviews: 128,
+            description: '这是一个非常棒的商品...'
+          }
+        },
+        {
+          type: 'action-bar',
+          props: {
+            buttons: [
+              { text: '立即购买', type: 'primary', color: '#ff6b6b' },
+              { text: '加入购物车', type: 'secondary', color: '#4ecdc4' }
+            ]
+          }
+        }
+      ]
+    };
+  }
+
+  generateDashboardMock() {
+    return {
+      type: 'dashboard',
+      layout: 'grid',
+      theme: {
+        primaryColor: '#667eea',
+        secondaryColor: '#764ba2',
+        backgroundColor: '#1a202c',
+        fontFamily: 'Microsoft YaHei'
+      },
+      components: [
+        {
+          type: 'sidebar',
+          props: {
+            menuItems: ['概览', '分析', '用户', '设置'],
+            width: 240
+          }
+        },
+        {
+          type: 'stats-cards',
+          props: {
+            cards: [
+              { title: '总用户', value: '12,345', change: '+12%' },
+              { title: '收入', value: '¥89,234', change: '+8%' },
+              { title: '订单', value: '1,234', change: '+15%' }
+            ]
+          }
+        },
+        {
+          type: 'chart',
+          props: {
+            type: 'line',
+            title: '趋势图'
+          }
+        }
+      ]
+    };
+  }
+
+  generateStratStudioMock() {
     return {
       type: 'landing-page',
-      layout: 'flex',
+      layout: 'grid',
       theme: {
-        primaryColor: options.primaryColor || '#667eea',
-        secondaryColor: options.secondaryColor || '#764ba2',
+        primaryColor: '#8b5cf6',
+        secondaryColor: '#3b82f6',
+        backgroundColor: '#0a0a0a',
+        fontFamily: 'Microsoft YaHei'
+      },
+      components: [
+        {
+          type: 'hero',
+          props: {
+            headline: 'Strat Studio - Premium Web Design',
+            subheadline: 'Design studio for AI, SaaS & Tech',
+            description: 'Meet your new AI Design Agency',
+            ctaText: 'Schedule a Free Call'
+          }
+        },
+        {
+          type: 'portfolio',
+          props: {
+            title: 'Portfolio - Works that build trust',
+            works: ['AI SaaS', 'SaaS Template', 'Portfolio', 'Dashboard', 'Technology', 'Agency']
+          }
+        },
+        {
+          type: 'benefits',
+          props: {
+            title: 'Speed, Simplicity',
+            items: ['Swift replies', 'Careful edits', 'Adaptable support']
+          }
+        },
+        {
+          type: 'footer',
+          props: {
+            copyright: '© 2024 Strat Studio. All rights reserved.'
+          }
+        }
+      ]
+    };
+  }
+
+  generateLandingPageMock() {
+    return {
+      type: 'landing-page',
+      layout: 'grid',
+      theme: {
+        primaryColor: '#667eea',
+        secondaryColor: '#764ba2',
         backgroundColor: '#ffffff',
         fontFamily: 'Microsoft YaHei'
       },
@@ -215,35 +680,33 @@ class AIUIGenerator {
           props: {
             logo: 'Logo',
             navItems: ['首页', '功能', '价格', '关于'],
-            height: 80
+            ctaText: '开始使用'
           }
         },
         {
           type: 'hero',
           props: {
-            headline: '欢迎来到我们的产品',
-            subheadline: '这是最好的解决方案',
+            headline: '打造卓越的数字体验',
+            subheadline: '我们帮助您构建令人惊艳的产品',
             ctaText: '立即开始',
-            ctaColor: options.primaryColor || '#667eea',
-            height: 500
+            secondaryCtaText: '了解更多'
           }
         },
         {
           type: 'features',
           props: {
             title: '核心功能',
-            features: [
-              { icon: '🚀', title: '快速', description: '极速体验' },
-              { icon: '🔒', title: '安全', description: '企业级安全' },
-              { icon: '💡', title: '智能', description: 'AI 驱动' }
+            items: [
+              { title: '快速开发', description: '高效的工作流程' },
+              { title: '精美设计', description: '专业的视觉体验' },
+              { title: '可靠稳定', description: '企业级质量保证' }
             ]
           }
         },
         {
           type: 'footer',
           props: {
-            copyright: '© 2024 公司名称',
-            links: ['隐私政策', '服务条款', '联系我们']
+            copyright: '© 2024 All rights reserved.'
           }
         }
       ]
@@ -251,274 +714,55 @@ class AIUIGenerator {
   }
 
   /**
-   * 将 UI 描述转换为 HTML
+   * 切换模型
    */
-  convertToHTML(uiDescription) {
-    const { theme, components } = uiDescription;
+  switchModel(provider, model) {
+    console.log(`[AIUIGenerator] 切换模型: ${provider} / ${model}`);
     
-    let html = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      font-family: ${theme.fontFamily}, Arial, sans-serif;
-      background-color: ${theme.backgroundColor};
-      color: #333;
+    this.aiProvider = provider;
+    this.model = model;
+    this.apiKey = this.getApiKeyFromEnv(provider);
+    
+    this.modelConfig = getConfigByModelId(model) || getModelConfig(provider);
+    if (this.modelConfig) {
+      this.baseURL = this.modelConfig.baseURL;
     }
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-  </style>
-</head>
-<body>
-`;
-
-    components.forEach(comp => {
-      html += this.renderComponent(comp, theme);
-    });
-
-    html += `
-</body>
-</html>
-`;
-
-    return html;
+    
+    console.log(`[AIUIGenerator] 已切换到: ${model}`);
   }
 
   /**
-   * 渲染单个组件为 HTML
+   * 获取当前模型信息
    */
-  renderComponent(component, theme) {
-    const { type, props } = component;
-    
-    switch (type) {
-      case 'header':
-        return `
-  <header style="background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 20px 0;">
-    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-      <div style="font-size: 24px; font-weight: bold; color: ${theme.primaryColor};">${props.logo}</div>
-      <nav style="display: flex; gap: 30px;">
-        ${props.navItems.map(item => `<a href="#" style="text-decoration: none; color: #666;">${item}</a>`).join('')}
-      </nav>
-    </div>
-  </header>
-`;
-
-      case 'hero':
-        return `
-  <section style="background: linear-gradient(135deg, ${theme.primaryColor} 0%, ${theme.secondaryColor} 100%); 
-                  color: white; padding: 100px 0; text-align: center;">
-    <div class="container">
-      <h1 style="font-size: 48px; margin-bottom: 20px;">${props.headline}</h1>
-      <p style="font-size: 24px; margin-bottom: 40px; opacity: 0.9;">${props.subheadline}</p>
-      <button style="background: white; color: ${props.ctaColor}; padding: 15px 40px; 
-                     border: none; border-radius: 30px; font-size: 18px; cursor: pointer;">
-        ${props.ctaText}
-      </button>
-    </div>
-  </section>
-`;
-
-      case 'features':
-        return `
-  <section style="padding: 80px 0;">
-    <div class="container">
-      <h2 style="text-align: center; font-size: 36px; margin-bottom: 60px;">${props.title}</h2>
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px;">
-        ${props.features.map(f => `
-          <div style="text-align: center; padding: 40px;">
-            <div style="font-size: 48px; margin-bottom: 20px;">${f.icon}</div>
-            <h3 style="font-size: 24px; margin-bottom: 10px;">${f.title}</h3>
-            <p style="color: #666;">${f.description}</p>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  </section>
-`;
-
-      case 'footer':
-        return `
-  <footer style="background: #2d3748; color: white; padding: 40px 0; text-align: center;">
-    <div class="container">
-      <p style="margin-bottom: 20px;">${props.copyright}</p>
-      <div style="display: flex; justify-content: center; gap: 30px;">
-        ${props.links.map(link => `<a href="#" style="color: #a0aec0; text-decoration: none;">${link}</a>`).join('')}
-      </div>
-    </div>
-  </footer>
-`;
-
-      default:
-        return '';
-    }
-  }
-
-  /**
-   * 生成完整 UI
-   * 
-   * @param {string} prompt - 用户需求
-   * @param {Object} options - 配置
-   * @returns {Object} 包含浏览器预览和 Leafer 高保真图
-   */
-  async generate(prompt, options = {}) {
-    console.log('[AIUIGenerator] 开始生成 UI...');
-    console.log(`[AIUIGenerator] 需求: ${prompt}`);
-    
-    // 1. AI 生成 UI 描述
-    const uiDescription = await this.generateUIDescription(prompt, options);
-    
-    // 2. 生成 HTML
-    const html = this.convertToHTML(uiDescription);
-    
-    // 3. 浏览器截图预览
-    console.log('[AIUIGenerator] 生成浏览器预览...');
-    const browserScreenshot = await this.browser.screenshot(html, {
-      width: options.width || 1200,
-      height: options.height || 800,
-      format: 'png'
-    });
-    
-    // 4. Leafer 生成高保真图
-    console.log('[AIUIGenerator] 生成高保真图...');
-    const leaferElements = this.convertToLeaferElements(uiDescription);
-    const highFidelityResult = await this.leafer.render({
-      width: options.width || 1200,
-      height: options.height || 800,
-      elements: leaferElements
-    });
-    
-    console.log('[AIUIGenerator] ✅ UI 生成完成');
-    
+  getCurrentModel() {
     return {
-      uiDescription,
-      html,
-      browserPreview: browserScreenshot,
-      highFidelityImage: highFidelityResult,
-      files: {
-        html: `ui-${Date.now()}.html`,
-        browser: `browser-preview-${Date.now()}.png`,
-        leafer: highFidelityResult.filename
-      }
+      provider: this.aiProvider,
+      model: this.model,
+      config: this.modelConfig
     };
   }
 
   /**
-   * 将 UI 描述转换为 Leafer 元素
+   * 验证配置
    */
-  convertToLeaferElements(uiDescription) {
-    const { theme, components } = uiDescription;
-    const elements = [];
-    let yOffset = 0;
-
-    // 背景
-    elements.push({
-      type: 'box',
-      x: 0,
-      y: 0,
-      width: 1200,
-      height: 800,
-      fill: theme.backgroundColor
-    });
-
-    components.forEach(comp => {
-      switch (comp.type) {
-        case 'header':
-          elements.push({
-            type: 'box',
-            x: 0,
-            y: yOffset,
-            width: 1200,
-            height: comp.props.height || 80,
-            fill: '#ffffff',
-            shadow: { x: 0, y: 2, blur: 4, color: '#00000010' }
-          });
-          elements.push({
-            type: 'text',
-            x: 40,
-            y: yOffset + 45,
-            text: comp.props.logo,
-            fill: theme.primaryColor,
-            fontSize: 24,
-            fontWeight: 'bold'
-          });
-          yOffset += comp.props.height || 80;
-          break;
-
-        case 'hero':
-          elements.push({
-            type: 'box',
-            x: 0,
-            y: yOffset,
-            width: 1200,
-            height: comp.props.height || 400,
-            fill: { type: 'linear', from: [0, 0], to: [1200, 0], colors: [theme.primaryColor, theme.secondaryColor] }
-          });
-          elements.push({
-            type: 'text',
-            x: 600,
-            y: yOffset + 150,
-            text: comp.props.headline,
-            fill: '#ffffff',
-            fontSize: 48,
-            fontWeight: 'bold',
-            textAlign: 'center'
-          });
-          elements.push({
-            type: 'text',
-            x: 600,
-            y: yOffset + 220,
-            text: comp.props.subheadline,
-            fill: '#ffffff',
-            fontSize: 24,
-            textAlign: 'center'
-          });
-          yOffset += comp.props.height || 400;
-          break;
-
-        // 其他组件类型...
-      }
-    });
-
-    return elements;
-  }
-
-  /**
-   * 关闭服务
-   */
-  async close() {
-    await this.browser.close();
-    console.log('[AIUIGenerator] 服务已关闭');
+  validateConfig() {
+    const errors = [];
+    
+    if (!this.apiKey) {
+      errors.push(`缺少 API 密钥: ${this.aiProvider}`);
+    } else if (!validateApiKey(this.aiProvider, this.apiKey)) {
+      errors.push(`API 密钥格式可能不正确: ${this.aiProvider}`);
+    }
+    
+    if (!this.modelConfig) {
+      errors.push(`未知的模型配置: ${this.model}`);
+    }
+    
+    return {
+      valid: errors.length === 0,
+      errors
+    };
   }
 }
 
 module.exports = { AIUIGenerator };
-
-// 测试代码
-if (require.main === module) {
-  const generator = new AIUIGenerator();
-  
-  (async () => {
-    try {
-      await generator.init();
-      
-      // 测试生成
-      const result = await generator.generate('创建一个现代化的 SaaS 产品落地页', {
-        style: '现代简洁',
-        primaryColor: '#667eea',
-        secondaryColor: '#764ba2'
-      });
-      
-      console.log('生成结果:', {
-        files: result.files,
-        preview: result.browserPreview.substring(0, 100) + '...'
-      });
-      
-      await generator.close();
-    } catch (err) {
-      console.error('错误:', err);
-      process.exit(1);
-    }
-  })();
-}

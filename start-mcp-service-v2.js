@@ -14,7 +14,7 @@ if (!fs.existsSync(outputDir)) {
 }
 
 // 导入 V2 渲染器
-const LeaferRendererV2 = require('./leafer-renderer-v2');
+const { LeaferRendererV2 } = require('./leafer-renderer-v2');
 
 class MCPServerV2 {
   constructor() {

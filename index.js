@@ -5,7 +5,7 @@
  */
 
 const { DesignSystemProGenerator, ThemeConfig, AdvancedComponentGenerator, ResponsiveTemplateGenerator } = require('./leafer-design-system-pro');
-const LeaferRenderer = require('./leafer-renderer-v2');
+const { LeaferRendererV2: LeaferRenderer } = require('./leafer-renderer-v2');
 
 /**
  * 创建设计系统生成器

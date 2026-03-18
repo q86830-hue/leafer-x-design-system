@@ -198,6 +198,101 @@ const result = await renderer.render({
 }
 ```
 
+## 🤖 AI 模型支持
+
+本系统使用 **大语言模型（LLM）** 生成 UI 设计描述（JSON格式），然后通过 LeaferJS 渲染成图像。
+
+### 国内大语言模型（推荐用于 UI 描述生成）
+- **百度文心一言**: ERNIE-4.0, ERNIE-3.5
+- **阿里通义千问**: Qwen-Max, Qwen-Plus, Qwen-Turbo ⭐推荐
+- **字节豆包**: Doubao-Pro, Doubao-Lite ⭐推荐（中文优化）
+- **智谱 AI**: GLM-4, GLM-3-Turbo
+- **讯飞星火**: Spark-3.5, Spark-3.0
+- **DeepSeek**: DeepSeek-Chat, DeepSeek-Coder ⭐性价比高
+- **Kimi**: Kimi-Latest, Kimi-128K（长文本）
+- **MiniMax**: abab6.5, abab6
+- **零一万物**: Yi-Large, Yi-Medium
+- **百川智能**: Baichuan-4, Baichuan-3
+
+### 国外大语言模型
+- **OpenAI**: GPT-4o, GPT-4-Turbo, GPT-3.5-Turbo
+- **Anthropic Claude**: Claude-3.5-Sonnet, Claude-3-Opus ⭐JSON能力强
+- **Google Gemini**: Gemini-1.5-Pro, Gemini-1.5-Flash
+- **OpenRouter**: Healer-Alpha ⭐UI设计专用
+- **Cohere**: Command-R-Plus, Command-R
+- **Mistral**: Mistral-Large, Mixtral-8x22B
+
+### 图像生成模型（如需直接生成图片）
+如需直接生成位图图片（而非本系统的矢量渲染），可使用：
+- **OpenAI DALL-E 3**: 高质量图像生成
+- **阿里通义万相**: 中文理解好
+- **字节豆包·生图**: 速度快
+- **百度文心一格**: 艺术风格
+- **Stability AI**: 开源生态
+
+> 💡 **说明**: 本系统主要使用 LLM 生成结构化 UI 描述，再通过 LeaferJS 渲染成高保真矢量图像。这种方式比直接生成位图更灵活、可编辑、可缩放。
+
+### 使用 AI 生成 UI
+
+```javascript
+const { AIUIGenerator } = require('leafer-x-design-system');
+
+// 使用 OpenRouter
+const generator = new AIUIGenerator({
+  aiProvider: 'openrouter',
+  model: 'openrouter/healer-alpha',
+  apiKey: 'your-api-key'
+});
+
+// 使用 DeepSeek (国内)
+const generator = new AIUIGenerator({
+  aiProvider: 'deepseek',
+  model: 'deepseek-chat',
+  apiKey: 'your-api-key'
+});
+
+// 使用通义千问 (国内)
+const generator = new AIUIGenerator({
+  aiProvider: 'qwen',
+  model: 'qwen-max',
+  apiKey: 'your-api-key'
+});
+
+// 使用字节豆包 (国内，中文优化)
+const generator = new AIUIGenerator({
+  aiProvider: 'doubao',
+  model: 'doubao-pro',
+  apiKey: 'your-api-key'
+});
+
+// 生成 UI 描述
+const uiDescription = await generator.generateUIDescription(
+  '创建一个现代化的电商商品详情页',
+  { style: '现代简洁', primaryColor: '#ff6b6b' }
+);
+```
+
+### 环境变量配置
+
+创建 `.env` 文件配置 API 密钥：
+
+```bash
+# 国内模型
+DEEPSEEK_API_KEY=your_deepseek_api_key
+QWEN_API_KEY=your_qwen_api_key
+CHATGLM_API_KEY=your_chatglm_api_key
+KIMI_API_KEY=your_kimi_api_key
+
+# 国外模型
+OPENAI_API_KEY=your_openai_api_key
+ANTHROPIC_API_KEY=your_anthropic_api_key
+OPENROUTER_API_KEY=your_openrouter_api_key
+
+# 默认配置
+DEFAULT_AI_PROVIDER=openrouter
+DEFAULT_MODEL=openrouter/healer-alpha
+```
+
 ## 🔌 MCP 服务 API
 
 启动 MCP 服务后，可通过 HTTP API 调用：

@@ -10,8 +10,7 @@
   "scripts": {
     "start": "node start-mcp-service-v2.js",
     "generate": "node leafer-design-system-pro.js",
-    "render": "node render-pro-templates.js",
-    "test": "node test-mcp-render.js"
+    "render": "node render-pro-templates.js"
   },
   "keywords": [
     "leaferjs",
@@ -44,12 +43,17 @@
     "index.js",
     "index.d.ts",
     "cli.js",
+    "ai-*.js",
+    "browser-bridge.js",
+    "font-config.js",
     "leafer-*.js",
     "start-*.js",
     "mcp-*.js",
+    "strat-studio-*.js",
     "README.md",
     "LICENSE",
     "assets/",
-    "examples/"
+    "examples/",
+    "ui-design/"
   ]
 }

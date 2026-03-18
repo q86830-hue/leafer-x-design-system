@@ -782,4 +782,4 @@ class LeaferRendererV2 {
   }
 }
 
-module.exports = LeaferRendererV2;
+module.exports = { LeaferRendererV2 };

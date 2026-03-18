@@ -47,4 +47,20 @@ Thumbs.db
 
 # MCP server info
 mcp-server-info.json
-node_modules
+
+# Test files
+test-*.js
+
+# Chrome binaries
+chrome-headless-shell-*/
+
+# Distribution
+dist/
+
+# Zip files
+*.zip
+
+# Large binaries
+*.exe
+*.dll
+*.pak
