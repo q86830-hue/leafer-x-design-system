@@ -3,9 +3,9 @@
  * 基于 @leafer-ui/node 的高性能 UI 渲染引擎
  */
 
-// 从 h: 驱动器的 mcp-service 加载依赖
-const { Leafer, Rect, Ellipse, Line, Polygon, Star, Path, Text, Image, Group, useCanvas } = require('h:/Yj/mcp-service/node_modules/@leafer-ui/node');
-const skia = require('h:/Yj/mcp-service/node_modules/skia-canvas');
+// 从当前项目的 node_modules 加载依赖
+const { Leafer, Rect, Ellipse, Line, Polygon, Star, Path, Text, Image, Group, useCanvas } = require('@leafer-ui/node');
+const skia = require('skia-canvas');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
@@ -21,31 +21,23 @@ try {
   throw error;
 }
 
-// 加载中文字体
+// 加载中文字体 - 使用跨平台字体配置
 const { FontLibrary } = skia;
-console.log('[LeaferRenderer] Loading Chinese fonts...');
+const fontConfig = require('./font-config');
+
+console.log('[LeaferRenderer] Loading fonts...');
+console.log(`[LeaferRenderer] Platform: ${fontConfig.getPlatform()}`);
+
 try {
-  const systemFonts = [
-    { file: 'C:/Windows/Fonts/simhei.ttf', family: 'SimHei' },
-    { file: 'C:/Windows/Fonts/simsunb.ttf', family: 'SimSun' },
-    { file: 'C:/Windows/Fonts/msyh.ttc', family: 'Microsoft YaHei' },
-  ];
+  // 使用跨平台字体配置加载字体
+  const loadedFonts = fontConfig.loadFonts(FontLibrary);
   
-  const availableFonts = systemFonts.filter(f => fs.existsSync(f.file));
-  
-  if (availableFonts.length > 0) {
-    for (const font of availableFonts) {
-      try {
-        FontLibrary.use(font.family, [font.file]);
-        console.log(`[LeaferRenderer] ✅ Loaded font: ${font.family}`);
-      } catch (fontError) {
-        console.warn(`[LeaferRenderer] ⚠️ Failed to load font ${font.family}:`, fontError.message);
-      }
-    }
-    global.CHINESE_FONT_FAMILIES = availableFonts.map(f => f.family);
-  } else {
-    console.warn('[LeaferRenderer] ⚠️ No Chinese fonts found');
+  if (loadedFonts.length === 0) {
+    console.warn('[LeaferRenderer] ⚠️ No fonts loaded, using fallback');
     global.CHINESE_FONT_FAMILIES = ['Arial'];
+  } else {
+    global.CHINESE_FONT_FAMILIES = loadedFonts;
+    console.log(`[LeaferRenderer] ✅ Total fonts loaded: ${loadedFonts.length}`);
   }
 } catch (error) {
   console.warn('[LeaferRenderer] ⚠️ Font loading failed:', error.message);

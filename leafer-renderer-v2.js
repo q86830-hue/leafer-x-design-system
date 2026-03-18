@@ -13,12 +13,12 @@
  * - 更好的错误处理
  */
 
-// 从 h: 驱动器的 mcp-service 加载依赖
+// 从当前项目的 node_modules 加载依赖
 const { 
   Leafer, Rect, Ellipse, Line, Polygon, Star, Path, Text, Image, 
   Group, Box, Frame, Pen, useCanvas 
-} = require('h:/Yj/mcp-service/node_modules/@leafer-ui/node');
-const skia = require('h:/Yj/mcp-service/node_modules/skia-canvas');
+} = require('@leafer-ui/node');
+const skia = require('skia-canvas');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
@@ -34,32 +34,26 @@ try {
   throw error;
 }
 
-// 加载中文字体
+// 加载中文字体 - 使用跨平台字体配置
 const { FontLibrary } = skia;
-console.log('[LeaferRenderer V2] Loading Chinese fonts...');
-const loadedFonts = [];
+const fontConfig = require('./font-config');
+
+console.log('[LeaferRenderer V2] Loading fonts...');
+console.log(`[LeaferRenderer V2] Platform: ${fontConfig.getPlatform()}`);
+
+let loadedFonts = [];
 
 try {
-  const systemFonts = [
-    { file: 'C:/Windows/Fonts/simhei.ttf', family: 'SimHei' },
-    { file: 'C:/Windows/Fonts/simsunb.ttf', family: 'SimSun' },
-    { file: 'C:/Windows/Fonts/msyh.ttc', family: 'Microsoft YaHei' },
-    { file: 'C:/Windows/Fonts/msyhbd.ttc', family: 'Microsoft YaHei Bold' },
-  ];
+  // 使用跨平台字体配置加载字体
+  loadedFonts = fontConfig.loadFonts(FontLibrary);
   
-  for (const font of systemFonts) {
-    if (fs.existsSync(font.file)) {
-      try {
-        FontLibrary.use(font.family, [font.file]);
-        loadedFonts.push(font.family);
-        console.log(`[LeaferRenderer V2] ✅ Loaded font: ${font.family}`);
-      } catch (fontError) {
-        console.warn(`[LeaferRenderer V2] ⚠️ Failed to load ${font.family}:`, fontError.message);
-      }
-    }
+  if (loadedFonts.length === 0) {
+    console.warn('[LeaferRenderer V2] ⚠️ No fonts loaded, using fallback');
+    loadedFonts = ['Arial'];
   }
   
-  global.CHINESE_FONT_FAMILIES = loadedFonts.length > 0 ? loadedFonts : ['Arial'];
+  global.CHINESE_FONT_FAMILIES = loadedFonts;
+  console.log(`[LeaferRenderer V2] ✅ Total fonts loaded: ${loadedFonts.length}`);
 } catch (error) {
   console.warn('[LeaferRenderer V2] ⚠️ Font loading failed:', error.message);
   global.CHINESE_FONT_FAMILIES = ['Arial'];
