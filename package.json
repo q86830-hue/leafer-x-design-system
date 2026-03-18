@@ -1,6 +1,6 @@
 {
   "name": "leafer-x-design-system",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "基于 LeaferJS 的高保真 UI 设计系统生成器 - 支持全平台(MCP v3.1)",
   "main": "index.js",
   "types": "index.d.ts",
@@ -54,6 +54,7 @@
     "LICENSE",
     "WORKFLOW_DIAGRAM.md",
     "MCP_WORKFLOW.md",
+    "USAGE_GUIDE.md",
     "assets/",
     "examples/",
     "templates/"
