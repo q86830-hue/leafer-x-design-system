@@ -16,10 +16,10 @@
 
 ```bash
 # 全局安装
-npm install -g leafer-design-system
+npm install -g leafer-x-design-system
 
 # 或本地安装
-npm install leafer-design-system
+npm install leafer-x-design-system
 ```
 
 ## 🚀 快速开始
