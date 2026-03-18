@@ -51,6 +51,9 @@ class AIUIGenerator {
       'ernie': 'BAIDU_API_KEY',
       'spark': 'SPARK_API_KEY',
       'minimax': 'MINIMAX_API_KEY',
+      'doubao': 'DOUBAO_API_KEY',
+      'yi': 'YI_API_KEY',
+      'baichuan': 'BAICHUAN_API_KEY',
       'cohere': 'COHERE_API_KEY',
       'mistral': 'MISTRAL_API_KEY'
     };
